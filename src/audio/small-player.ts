@@ -25,6 +25,11 @@
 
 "use strict";
 
+// NOTE: This is a MODIFIED version of SoundBox's player-small.js
+// (https://sb.bitsnbites.eu/player-small.js, zlib license — see header above):
+// converted to an ES module, with the distortion effect and some unused
+// helpers commented out.
+
 // Some general notes and recommendations:
 //  * This code uses modern ECMAScript features, such as ** instead of
 //    Math.pow(). You may have to modify the code to make it work on older

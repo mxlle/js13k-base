@@ -29,3 +29,12 @@ npm run build-js13k  # competition zip + size report
 
 See `CLAUDE.md` for the size-golfing rules that make this setup tick (important: new enums must be
 registered in `vite.config.ts`).
+
+## Licensing
+
+This template is MIT-licensed (see `LICENSE`), with one third-party component: the audio players
+in `src/audio/small-player*.ts` are modified versions of `player-small.js` from
+[SoundBox](https://sb.bitsnbites.eu/) by Marcus Geelnard, under the
+[zlib license](https://opensource.org/licenses/Zlib) (kept in the file headers — don't remove it).
+Note that the SoundBox *editor* itself is GPLv3, but the exported player routine and your own
+exported songs are not affected by that.
