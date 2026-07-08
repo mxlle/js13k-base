@@ -74,7 +74,9 @@ The unusual parts of this codebase exist to make minification maximally effectiv
   `description` field no code ever read; comments are free, object properties are not.
 - Music/sfx via SoundBox player (`src/audio/small-player*.ts`) — song data are tiny JS objects;
   compose at https://sb.bitsnbites.eu/ and export as JS.
-- Fonts: system/monospace + Noto Color Emoji only. No webfonts beyond that import.
+- Fonts: system/monospace + Noto Color Emoji. The Noto webfont import lives in
+  `globals.nice2have.scss` so it ships only in non-js13k builds — the competition build must not
+  make external requests (offline rule) and falls back to the system emoji font.
 - Reuse translations keys / strings where possible; identical strings compress, but each unique
   string costs.
 - ECT zip recompression runs automatically in package.js (via the `ect-bin` npm package, so it
