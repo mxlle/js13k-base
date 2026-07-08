@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 import { createWriteStream, existsSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import { execSync, spawnSync } from "node:child_process";
 import archiver from "archiver";
+import ect from "ect-bin";
 
 const rootDir = resolve(fileURLToPath(import.meta.url), "../..");
 const distDir = resolve(rootDir, "dist");
@@ -35,22 +36,12 @@ async function createZip() {
   });
 }
 
-// zip recompressors typically save 100-400 bytes over zlib level 9
+// ECT recompression typically saves ~4% over zlib level 9 (e.g. 559 B on a 14 kB zip)
 function recompress() {
-  const tools = [
-    ["ect", ["-9", "-zip", zipFile]], // brew install ect
-    ["advzip", ["-z", "-4", "-i", "32", zipFile]], // brew install advancecomp
-  ];
-
-  for (const [cmd, cmdArgs] of tools) {
-    const result = spawnSync(cmd, cmdArgs, { stdio: "ignore" });
-    if (!result.error && result.status === 0) {
-      console.log(`(zip recompressed with ${cmd})`);
-      return;
-    }
+  const result = spawnSync(ect, ["-9", "-zip", zipFile], { stdio: "ignore" });
+  if (result.error || result.status !== 0) {
+    console.warn("(ect recompression failed — zip is plain zlib level 9)");
   }
-
-  console.log("(hint: `brew install ect` or `brew install advancecomp` for a smaller zip)");
 }
 
 function report() {

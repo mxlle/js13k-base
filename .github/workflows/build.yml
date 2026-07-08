@@ -40,9 +40,6 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
 
-      - name: Install zip recompressor
-        run: sudo apt-get install -y advancecomp
-
       - run: npm ci
 
       - name: Build js13k zip

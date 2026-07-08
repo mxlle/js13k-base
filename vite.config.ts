@@ -52,8 +52,9 @@ export default defineConfig(({ mode, command }) => {
           preset: "smallest",
         },
         output: {
-          assetFileNames: "[hash][extname]",
-          entryFileNames: "[hash].js",
+          // filenames are stored twice in the zip — keep them short for js13k
+          assetFileNames: js13k ? "a[extname]" : "[hash][extname]",
+          entryFileNames: js13k ? "a.js" : "[hash].js",
         },
       },
       modulePreload: { polyfill: false },
@@ -86,6 +87,13 @@ export default defineConfig(({ mode, command }) => {
           include: ["src/**/*.ts"],
           transformer: [replaceMapsTransformer],
         }),
+      js13k && {
+        name: "strip-crossorigin",
+        transformIndexHtml: {
+          order: "post" as const,
+          handler: (html: string) => html.replaceAll(" crossorigin", ""),
+        },
+      },
       viteAwesomeSvgLoader(),
       createHtmlPlugin({
         minify: true,

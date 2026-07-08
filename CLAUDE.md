@@ -39,7 +39,10 @@ The unusual parts of this codebase exist to make minification maximally effectiv
    (`Direction.UP` → `0`) via `@rollup/plugin-replace`, so the enum object itself is tree-shaken
    away. **Every new `defineEnum` enum MUST be registered in the `replaceEnums({...})` call in
    `vite.config.ts`**, and enum member access must always be written literally as `EnumName.MEMBER`
-   (never destructured or aliased), or the replacement misses it.
+   (never destructured or aliased), or the replacement misses it. In particular, **never write
+   `Object.values(SomeEnum)`** — it keeps the whole enum object alive in the bundle; write the
+   literal member list instead (`[Direction.UP, Direction.DOWN, ...]`), which inlines to plain
+   numbers (2025 postmortem: five such calls cost ~57 zipped bytes).
 2. **Enum-keyed maps get compacted.** A custom AST transformer rewrites numeric-keyed object
    literals (`{0: "a", 1: "b"}`) into arrays or `"a|b".split("|")` — writing lookup maps keyed by
    enums is therefore cheap and idiomatic here.
@@ -64,13 +67,21 @@ The unusual parts of this codebase exist to make minification maximally effectiv
 - Prefer data-driven code (lookup tables keyed by enums) over branching; the map transformer and
   zip compression both love it.
 - Emojis are the sprite sheet: one emoji ≈ 4 bytes buys full-color art. No image assets.
+- But keep emojis (and any repeated markers) out of *data tables*: store level/config data as
+  compact digit strings and reconstruct the presentation at runtime. In 2025, replacing 21
+  emoji-formatted level strings with bare digit pairs + a 5-line decoder saved ~90 zipped bytes.
+- Audit data definitions for never-read fields before shipping — the 2025 levels carried a
+  `description` field no code ever read; comments are free, object properties are not.
 - Music/sfx via SoundBox player (`src/audio/small-player*.ts`) — song data are tiny JS objects;
   compose at https://sb.bitsnbites.eu/ and export as JS.
 - Fonts: system/monospace + Noto Color Emoji only. No webfonts beyond that import.
 - Reuse translations keys / strings where possible; identical strings compress, but each unique
   string costs.
-- The last ~200 bytes: `ect`/`advzip` recompression (automatic in package.js if installed) and
-  Roadroller (`build-js13k-roadroller`) are the emergency reserves — don't design around them.
+- ECT zip recompression runs automatically in package.js (via the `ect-bin` npm package, so it
+  also works on CI) and is worth ~4%. Roadroller (`build-js13k-roadroller`) is the emergency
+  reserve for the last kilobyte — don't design around it.
+- Output filenames and HTML attributes count too: js13k mode already uses single-letter
+  bundle names (filenames are stored twice in a zip) and strips `crossorigin` attributes.
 
 ## Conventions
 
