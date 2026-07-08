@@ -67,3 +67,6 @@ dist.zip
 
 # size tracking (local)
 .size-history.json
+
+# soundbox render output
+out

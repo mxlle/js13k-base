@@ -43,11 +43,20 @@ $board-size: 5;
   justify-content: center;
   gap: 0.25rem;
 
-  > :first-child {
-    grid-column: 2;
+  // D-pad: up on top, left/down/right below (button order: ⬆️ ⬅️ ➡️ ⬇️)
+  > :nth-child(1) {
+    grid-area: 1 / 2;
   }
 
-  > :last-child {
-    grid-column: 2;
+  > :nth-child(2) {
+    grid-area: 2 / 1;
+  }
+
+  > :nth-child(3) {
+    grid-area: 2 / 3;
+  }
+
+  > :nth-child(4) {
+    grid-area: 2 / 2;
   }
 }

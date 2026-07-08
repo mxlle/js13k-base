@@ -42,8 +42,8 @@ export const song = {
     {
       // Instrument 0
       i: instrument,
-      // Patterns
-      p: [1, 2, 2, 3, 3, 2, 2, 2, 1],
+      // Patterns (shortened arrangement of the 2025 song — same patterns, fewer plays)
+      p: [1, 2, 2, 3],
       // Columns
       c: [
         { n: [122, , , , 127, , , , 122, , , , 127, , , , 122, , , , 126, , , , 122, , , , 127], f: [] },
@@ -88,7 +88,7 @@ export const song = {
       // Instrument 1
       i: instrument,
       // Patterns
-      p: [, , 2, 1, 1, 2],
+      p: [, , 2, 1],
       // Columns
       c: [
         {
@@ -104,7 +104,7 @@ export const song = {
   ],
   rowLen: 22050, // In sample lengths
   patternLen: 32, // Rows per pattern
-  endPattern: 8, // End pattern
+  endPattern: 3, // End pattern
   numChannels: 2, // Number of channels
 };
 
