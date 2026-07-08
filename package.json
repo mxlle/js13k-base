@@ -1,0 +1,32 @@
+{
+  "name": "js13k-base",
+  "version": "1.0.0",
+  "main": "index",
+  "type": "module",
+  "scripts": {
+    "start": "vite",
+    "build": "vite build",
+    "build-js13k": "vite build -m js13k && npm run package",
+    "build-js13k-roadroller": "vite build -m js13k && node scripts/roadroll.js && npm run package",
+    "build-poki": "vite build -m poki && npm run package",
+    "package": "node scripts/package.js",
+    "size": "node scripts/package.js --report-only",
+    "clean": "rimraf dist",
+    "prettier": "prettier --write src scripts vite.config.ts"
+  },
+  "devDependencies": {
+    "@rollup/plugin-replace": "^6.0.2",
+    "archiver": "^7.0.1",
+    "lightningcss": "^1.30.1",
+    "prettier": "^3.3.3",
+    "rimraf": "^6.0.1",
+    "roadroller": "^2.1.0",
+    "rollup-plugin-visualizer": "^6.0.3",
+    "sass": "^1.77.8",
+    "type-fest": "^4.25.0",
+    "vite": "7.1.11",
+    "vite-awesome-svg-loader": "^2.1.0",
+    "vite-plugin-html": "^3.2.2",
+    "unplugin-ast": "^0.15.2"
+  }
+}

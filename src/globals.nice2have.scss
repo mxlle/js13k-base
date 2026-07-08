@@ -1,0 +1,11 @@
+// Styles that only ship in the non-js13k builds (loaded conditionally in index.ts).
+// Put polish here that isn't worth bytes in the competition zip.
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

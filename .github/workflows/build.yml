@@ -1,0 +1,58 @@
+name: Build
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build (friends & family)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+  js13k-size:
+    name: js13k size check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install zip recompressor
+        run: sudo apt-get install -y advancecomp
+
+      - run: npm ci
+
+      - name: Build js13k zip
+        run: npm run build-js13k
+
+      - name: Enforce 13 kB limit
+        run: node scripts/package.js --report-only --check
+
+      - name: Upload js13k zip
+        uses: actions/upload-artifact@v4
+        with:
+          name: js13k-zip
+          path: dist.zip

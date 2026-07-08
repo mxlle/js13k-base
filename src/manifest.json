@@ -1,0 +1,9 @@
+{
+  "short_name": "My js13k Game",
+  "name": "My js13k Game",
+  "icons": [],
+  "start_url": "./index.html",
+  "display": "standalone",
+  "theme_color": "#ffffff",
+  "background_color": "#09162a"
+}
