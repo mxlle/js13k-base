@@ -20,7 +20,9 @@ open `dist-analyzation/stats.html` after any build.
 
 ## Build modes / feature flags
 
-Three modes via `.env`, `.env.js13k`, `.env.poki` (`GERMAN_ENABLED`, `POKI_ENABLED`, `IS_JS13K`).
+Three modes via `.env`, `.env.js13k`, `.env.poki` (`POKI_ENABLED`, `IS_JS13K`, and per-language
+`LANG_<code>_ENABLED` toggles such as `LANG_DE_ENABLED`). The `LANG_` prefix is registered in
+`vite.config.ts`'s `envPrefix`, so new language toggles need no `envPrefix` edit.
 **Never check `import.meta.env` in game code directly** — add a `HAS_*` flag in `src/env-utils.ts`
 instead. Because the flags are compile-time constants, everything behind `if (HAS_X)` is
 tree-shaken out of builds where the flag is false. That is the mechanism that lets the

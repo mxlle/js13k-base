@@ -26,7 +26,9 @@ export default defineConfig(({ mode, command }) => {
 
   return {
     base: "",
-    envPrefix: ["GERMAN_ENABLED", "POKI_ENABLED", "IS_JS13K"],
+    // "LANG_" exposes every LANG_<code>_ENABLED language toggle without needing
+    // a new prefix entry per language.
+    envPrefix: ["LANG_", "POKI_ENABLED", "IS_JS13K"],
     build: {
       minify: production ? "terser" : false,
       cssMinify: production ? "lightningcss" : false,
