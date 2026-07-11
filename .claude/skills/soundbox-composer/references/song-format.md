@@ -45,6 +45,11 @@ returns 1 (`generateUntilDone` in `music-control.ts`).
 - **Polyphony:** the `n` array is up to 4 concatenated columns of `patternLen` entries
   each. Row `r`, column `col` is `n[r + col * patternLen]`. A chord needs the pattern
   padded to full `patternLen` per column. (All 2025 sounds are monophonic.)
+  Counting holes in sparse literals is error-prone — before rendering polyphonic
+  patterns, verify alignment with a quick check, e.g.:
+  `node -e 'const n=[/* paste */]; console.log(n.length, "cols:", Math.ceil(n.length/PATLEN))'`
+  or build columns as separate arrays and concatenate:
+  `n: [...col1, ...col2]` with each column padded to exactly `patternLen` entries.
 - Each note is rendered once and cached — long notes overlapping the next row simply
   mix additively.
 

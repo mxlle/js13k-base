@@ -21,9 +21,10 @@ object anatomy, all 29 instrument parameters, and the note-number table.
 - `src/audio/small-player.ts` (`CPlayer`) — all 4 oscillators (0 sin, 1 square, 2 saw,
   3 tri), still no distortion. Costs more bytes; only ships if something imports it.
 
-A sound designed with square/saw won't survive the simple player — it will render, but
-every oscillator falls back to sine. Design within the sine + noise + envelope + delay
-palette unless the byte budget allows the full player.
+A non-zero waveform index **crashes** the simple player (its oscillator array has a
+single entry, so `mOscillators[1]` is undefined) — this is not a graceful fallback.
+Design within the sine + noise + envelope + delay palette unless the byte budget
+allows the full player.
 
 ## Workflow
 
