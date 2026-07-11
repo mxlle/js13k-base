@@ -1,4 +1,4 @@
-import { song } from "./songs/music-and-sounds";
+import { cozyPawsSong as song } from "./songs/cozy-paws";
 import { LocalStorageKey, setLocalStorageItem } from "../utils/local-storage";
 import { PubSubEvent, pubSubService } from "../utils/pub-sub-service";
 import { IS_POKI_ENABLED } from "../env-utils";
