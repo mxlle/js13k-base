@@ -7,6 +7,7 @@ export const PubSubEvent = defineEnum({
   MUTE_MUSIC: 2,
   UNMUTE_MUSIC: 3,
   CLOSE_DIALOG: 4,
+  STAR_COLLECT: 5,
 });
 
 type EventDataTypes = {
@@ -15,6 +16,7 @@ type EventDataTypes = {
   [PubSubEvent.MUTE_MUSIC]: undefined;
   [PubSubEvent.UNMUTE_MUSIC]: undefined;
   [PubSubEvent.CLOSE_DIALOG]: boolean;
+  [PubSubEvent.STAR_COLLECT]: undefined;
 };
 
 type PubSubEventWithData = typeof PubSubEvent.GAME_END | typeof PubSubEvent.CLOSE_DIALOG;

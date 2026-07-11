@@ -8,26 +8,35 @@ import { getTranslation } from "../../translations/i18n";
 import { TranslationKey } from "../../translations/translationKey";
 import { createDialog, Dialog } from "../../framework/components/dialog/dialog";
 
-// Placeholder game: move the cat to the star. Replace with the real game,
-// but keep the GAME_START / GAME_END pub-sub events — index.ts (sounds,
-// poki hooks) relies on them.
+// Placeholder game: move the cat to collect all 3 stars while avoiding the
+// bomb. Replace with the real game, but keep the GAME_START / GAME_END events —
+// index.ts (sounds, poki hooks) relies on them, and STAR_COLLECT drives the
+// coin pickup sound.
 
 const BOARD_SIZE = 5;
+const STAR_COUNT = 3;
 
 interface Position {
   x: number;
   y: number;
 }
 
+interface Star {
+  position: Position;
+  element: HTMLElement;
+}
+
 export function DemoGameComponent(): ComponentDefinition<undefined> {
   let catPosition: Position;
-  let starPosition: Position;
+  let bombPosition: Position;
+  let stars: Star[];
+  let collected: number;
   let isRunning = false;
-  let winDialog: Dialog | undefined;
+  let endDialog: Dialog | undefined;
 
   const catElement = createElement({ text: "🐱", cssClass: [styles.entity, CssClass.EMOJI] });
-  const starElement = createElement({ text: "⭐", cssClass: [styles.entity, CssClass.EMOJI] });
-  const board = createElement({ cssClass: styles.board }, [starElement, catElement]);
+  const bombElement = createElement({ text: "💣", cssClass: [styles.entity, CssClass.EMOJI] });
+  const board = createElement({ cssClass: styles.board }, [bombElement, catElement]);
 
   const moveButtons: [string, Direction][] = [
     ["⬆️", Direction.UP],
@@ -48,6 +57,27 @@ export function DemoGameComponent(): ComponentDefinition<undefined> {
     element.style.translate = `${position.x * 100}% ${position.y * 100}%`;
   }
 
+  function samePosition(a: Position, b: Position) {
+    return a.x === b.x && a.y === b.y;
+  }
+
+  function randomFreePosition(occupied: Position[]): Position {
+    let position: Position;
+    do {
+      position = { x: getRandomIntFromInterval(0, BOARD_SIZE - 1), y: getRandomIntFromInterval(0, BOARD_SIZE - 1) };
+    } while (occupied.some((p) => samePosition(p, position)));
+    return position;
+  }
+
+  function endGame(isWon: boolean, translationKey: TranslationKey) {
+    isRunning = false;
+    pubSubService.publish(PubSubEvent.GAME_END, { isWon });
+
+    endDialog?.destroy();
+    endDialog = createDialog(createElement({ text: getTranslation(translationKey) }), () => startNewGame());
+    void endDialog.open();
+  }
+
   function move(direction: Direction) {
     if (!isRunning) return;
 
@@ -64,12 +94,20 @@ export function DemoGameComponent(): ComponentDefinition<undefined> {
     };
     placeEntity(catElement, catPosition);
 
-    if (catPosition.x === starPosition.x && catPosition.y === starPosition.y) {
-      isRunning = false;
-      pubSubService.publish(PubSubEvent.GAME_END, { isWon: true });
+    if (samePosition(catPosition, bombPosition)) {
+      endGame(false, TranslationKey.LOST);
+      return;
+    }
 
-      winDialog ??= createDialog(createElement({ text: getTranslation(TranslationKey.WON) }), () => startNewGame());
-      void winDialog.open();
+    const star = stars.find((s) => s.element.isConnected && samePosition(s.position, catPosition));
+    if (star) {
+      star.element.remove();
+      collected++;
+      pubSubService.publish(PubSubEvent.STAR_COLLECT);
+
+      if (collected === STAR_COUNT) {
+        endGame(true, TranslationKey.WON);
+      }
     }
   }
 
@@ -88,13 +126,26 @@ export function DemoGameComponent(): ComponentDefinition<undefined> {
   });
 
   function startNewGame() {
-    catPosition = { x: 0, y: 0 };
-    do {
-      starPosition = { x: getRandomIntFromInterval(0, BOARD_SIZE - 1), y: getRandomIntFromInterval(1, BOARD_SIZE - 1) };
-    } while (starPosition.x === catPosition.x && starPosition.y === catPosition.y);
+    stars?.forEach((s) => s.element.remove());
 
+    catPosition = { x: 0, y: 0 };
+    const occupied: Position[] = [catPosition];
+
+    bombPosition = randomFreePosition(occupied);
+    occupied.push(bombPosition);
+
+    stars = Array.from({ length: STAR_COUNT }, () => {
+      const position = randomFreePosition(occupied);
+      occupied.push(position);
+      const element = createElement({ text: "⭐", cssClass: [styles.entity, CssClass.EMOJI] });
+      placeEntity(element, position);
+      board.append(element);
+      return { position, element };
+    });
+
+    collected = 0;
     placeEntity(catElement, catPosition);
-    placeEntity(starElement, starPosition);
+    placeEntity(bombElement, bombPosition);
     isRunning = true;
 
     pubSubService.publish(PubSubEvent.GAME_START);

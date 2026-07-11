@@ -1,9 +1,10 @@
-import { loseSound, winSound } from "../songs/music-and-sounds";
+import { coinSound, loseSound, winSound } from "../songs/music-and-sounds";
 import { generateUntilDone } from "../music-control";
 import { CPlayer } from "../small-player";
 
 export let winSoundSrcUrl: string | undefined;
 export let loseSoundSrcUrl: string | undefined;
+export let coinSoundSrcUrl: string | undefined;
 
 export async function initWinLoseSoundEffects() {
   if (!winSoundSrcUrl) {
@@ -12,6 +13,10 @@ export async function initWinLoseSoundEffects() {
 
   if (!loseSoundSrcUrl) {
     loseSoundSrcUrl = await initSoundEffect(loseSound);
+  }
+
+  if (!coinSoundSrcUrl) {
+    coinSoundSrcUrl = await initSoundEffect(coinSound);
   }
 }
 

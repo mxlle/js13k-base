@@ -6,7 +6,7 @@ import { sleep } from "./utils/promise-utils";
 import { initAudio } from "./audio/music-control";
 import { getLocalStorageItem, LocalStorageKey } from "./utils/local-storage";
 import { GAME_TITLE, HAS_SIMPLE_SOUND_EFFECTS, HAS_VISUAL_NICE_TO_HAVES, IS_POKI_ENABLED } from "./env-utils";
-import { initWinLoseSoundEffects, loseSoundSrcUrl, winSoundSrcUrl } from "./audio/sound-control/sound-control-box";
+import { coinSoundSrcUrl, initWinLoseSoundEffects, loseSoundSrcUrl, winSoundSrcUrl } from "./audio/sound-control/sound-control-box";
 import { playSound } from "./audio/sound-control/sound-control";
 import { HeaderComponent } from "./framework/components/header/header.component";
 import { MuteButton } from "./components/mute-button/mute-button";
@@ -37,6 +37,12 @@ function init() {
       pokiSdk.gameplayStart();
     }
   });
+
+  if (HAS_SIMPLE_SOUND_EFFECTS) {
+    pubSubService.subscribe(PubSubEvent.STAR_COLLECT, () => {
+      coinSoundSrcUrl && playSound(coinSoundSrcUrl);
+    });
+  }
 
   pubSubService.subscribe(PubSubEvent.GAME_END, (result) => {
     if (result.isWon) {
