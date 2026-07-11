@@ -81,6 +81,9 @@ allows the full player.
   release) give hi-hats/snares; a low sine with `ENV_EXP_DECAY` gives a kick.
 - Space/atmosphere comes from `FX_DELAY_AMT`/`FX_DELAY_TIME` and slow `FX_PAN_FREQ` —
   that's the entire trick behind the 2025 background track.
+- Loop seams: delay/release tails are truncated at the buffer end (the game loops the
+  WAV, it doesn't crossfade). Keep the final rows sparse and land the harmony so the
+  restart downbeat masks the cut — verify by checking RMS over the last ~200 ms.
 - Technique for calm/atmospheric briefs: a deep, slow foundation (low drone bass,
   long attack/release) with a light, sparse melody floating on top — and not much in
   between. Depth contrast beats layer count in a sine-only palette: two or three
