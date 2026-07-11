@@ -15,7 +15,8 @@ serves that constraint. When in doubt, the smaller output wins.
 
 After **every** change while working on the js13k build, run `npm run build-js13k` and check the
 reported size. `scripts/package.js` prints a per-file breakdown, the diff to the previous build
-(tracked in `.size-history.json`, gitignored), and bytes left. For a treemap of what costs what,
+(tracked in `.size-history.json`, gitignored — competition builds only via `--track`, so poki
+builds don't pollute the diffs), and bytes left. For a treemap of what costs what,
 open `dist-analyzation/stats.html` after any build.
 
 ## Build modes / feature flags
@@ -103,9 +104,14 @@ The unusual parts of this codebase exist to make minification maximally effectiv
 
 ## Yearly kickoff checklist
 
-1. Update `GAME_TITLE` in `src/env-utils.ts`, title in `index.html`, name in `src/manifest.json`,
+1. Update dependencies BEFORE the jam (`npm outdated`; majors deliberately, one at a time) — no
+   time for bundler surprises mid-competition. After upgrading, `npm run build-js13k` and compare
+   the zip size, then verify the size machinery in `dist/a.js`: no `Object.values`/`Object.freeze`
+   leaked, quoted keys (`"ArrowUp"`) survived, numeric-keyed maps got compacted, and no external
+   URL (`fonts.googleapis`) or unreferenced asset landed in the js13k dist.
+2. Update `GAME_TITLE` in `src/env-utils.ts`, title in `index.html`, name in `src/manifest.json`,
    `package.json` name.
-2. Replace `src/components/demo-game/` with the real game (keep the GAME_START/GAME_END events).
-3. Check the js13k rules page for this year's exact rules (zip size, allowed APIs) — they
+3. Replace `src/components/demo-game/` with the real game (keep the GAME_START/GAME_END events).
+4. Check the js13k rules page for this year's exact rules (zip size, allowed APIs) — they
    occasionally change.
-4. `npm run build-js13k` early and often; keep CI green (it enforces the limit on every push).
+5. `npm run build-js13k` early and often; keep CI green (it enforces the limit on every push).

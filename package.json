@@ -6,8 +6,8 @@
   "scripts": {
     "start": "vite",
     "build": "vite build",
-    "build-js13k": "vite build -m js13k && npm run package",
-    "build-js13k-roadroller": "vite build -m js13k && node scripts/roadroll.js && npm run package",
+    "build-js13k": "vite build -m js13k && npm run package -- --track",
+    "build-js13k-roadroller": "vite build -m js13k && node scripts/roadroll.js && npm run package -- --track",
     "build-poki": "vite build -m poki && npm run package",
     "package": "node scripts/package.js",
     "size": "node scripts/package.js --report-only",
@@ -16,18 +16,19 @@
   },
   "devDependencies": {
     "@rollup/plugin-replace": "^6.0.2",
-    "archiver": "^7.0.1",
+    "archiver": "^8.0.0",
     "ect-bin": "^1.4.1",
     "lightningcss": "^1.30.1",
-    "prettier": "^3.3.3",
+    "prettier": "^3.9.5",
     "rimraf": "^6.0.1",
     "roadroller": "^2.1.0",
-    "rollup-plugin-visualizer": "^6.0.3",
+    "rollup-plugin-visualizer": "^7.0.1",
     "sass": "^1.77.8",
-    "type-fest": "^4.25.0",
-    "unplugin-ast": "^0.15.2",
-    "vite": "7.1.11",
-    "vite-awesome-svg-loader": "^2.1.0",
+    "terser": "^5.49.0",
+    "type-fest": "^5.8.0",
+    "unplugin-ast": "^0.17.2",
+    "vite": "^8.1.4",
+    "vite-awesome-svg-loader": "^5.0.3",
     "vite-plugin-html": "^3.2.2"
   }
 }

@@ -90,10 +90,20 @@ export default defineConfig(({ mode, command }) => {
           transformer: [replaceMapsTransformer],
         }),
       js13k && {
-        name: "strip-crossorigin",
+        name: "js13k-tweaks",
         transformIndexHtml: {
           order: "post" as const,
           handler: (html: string) => html.replaceAll(" crossorigin", ""),
+        },
+        // rolldown emits the CSS of dynamic imports even when the import itself
+        // is eliminated as dead code — drop the nice2have stylesheet (it sits
+        // behind compile-time-false flags in js13k mode and is never referenced)
+        generateBundle(_options: unknown, bundle: Record<string, any>) {
+          for (const [fileName, output] of Object.entries(bundle)) {
+            if (output.type === "asset" && output.originalFileNames?.some((n: string) => n.includes("nice2have"))) {
+              delete bundle[fileName];
+            }
+          }
         },
       },
       viteAwesomeSvgLoader(),

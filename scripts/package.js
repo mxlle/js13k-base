@@ -2,7 +2,7 @@ import { join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createWriteStream, existsSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import { execSync, spawnSync } from "node:child_process";
-import archiver from "archiver";
+import { ZipArchive } from "archiver";
 import ect from "ect-bin";
 
 const rootDir = resolve(fileURLToPath(import.meta.url), "../..");
@@ -15,6 +15,7 @@ const SIZE_LIMIT = 13 * 1024; // 13,312 bytes — the js13k rule
 const args = process.argv.slice(2);
 const reportOnly = args.includes("--report-only"); // don't re-zip, just report
 const check = args.includes("--check"); // exit 1 if over the limit (for CI)
+const track = args.includes("--track"); // record size history — competition builds only, so other modes don't pollute the diffs
 
 if (!reportOnly) {
   await createZip();
@@ -25,7 +26,7 @@ report();
 
 async function createZip() {
   const output = createWriteStream(zipFile);
-  const archive = archiver("zip", { zlib: { level: 9 } });
+  const archive = new ZipArchive({ zlib: { level: 9 } });
 
   await new Promise((res, rej) => {
     output.on("close", res);
@@ -79,6 +80,8 @@ function report() {
 }
 
 function updateHistory(size) {
+  if (!track && !reportOnly) return undefined;
+
   let history = [];
   try {
     history = JSON.parse(readFileSync(historyFile, "utf8"));
@@ -88,7 +91,7 @@ function updateHistory(size) {
 
   const previous = history.at(-1);
 
-  if (!reportOnly) {
+  if (track && !reportOnly) {
     let commit = "";
     try {
       commit = execSync("git rev-parse --short HEAD", { cwd: rootDir, stdio: ["ignore", "pipe", "ignore"] })

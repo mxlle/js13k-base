@@ -8,7 +8,9 @@ export const Direction = defineEnum({
   RIGHT: 3,
 });
 
-export const ALL_DIRECTIONS: Direction[] = Object.values(Direction);
+// literal member list, NOT Object.values(Direction) — that would pin the whole
+// enum object into the bundle (see CLAUDE.md rule 1)
+export const ALL_DIRECTIONS: Direction[] = [Direction.UP, Direction.DOWN, Direction.LEFT, Direction.RIGHT];
 
 export function isDirection(move: unknown): move is Direction {
   return ALL_DIRECTIONS.includes(move as Direction);
