@@ -26,7 +26,9 @@ export const song = {
 
 Total duration in seconds = `rowLen * patternLen * (endPattern + 1) / 44100`.
 The player renders one channel per `generate()` call; the game loops it until it
-returns 1 (`generateUntilDone` in `music-control.ts`).
+returns 1 (`generateUntilDone` in `music-control.ts`). Because that progress ratio is
+`renderedChannels / numChannels`, **`numChannels` must equal `songData.length`** —
+it is load-bearing, not just metadata (wrong value = truncated render or a crash).
 
 ## Notes (`c[x].n`)
 
@@ -79,8 +81,8 @@ Index constants as in the SoundBox export comments:
 | 17 | LFO_AMT       | (simple player: unused) |
 | 18 | LFO_FREQ      | (simple player: unused) |
 | 19 | LFO_FX_FREQ   | (simple player: unused — filter LFO is commented out in BOTH players) |
-| 20 | FX_FILTER     | 0 none, 1 highpass, 2 lowpass, 3 bandpass |
-| 21 | FX_FREQ       | filter cutoff, 0-255 (× 43.24 Hz ≈ Hz) |
+| 20 | FX_FILTER     | 1 highpass, 2 lowpass, 3 bandpass — **CAUTION: the filter path always runs.** `FX_FILTER: 0` with `FX_FREQ: 0` silences everything (0 falls into the lowpass branch with a zero coefficient). For "no filter" use `FX_FILTER: 2, FX_FREQ: 255` (wide-open lowpass), like the 2025 instrument. |
+| 21 | FX_FREQ       | filter cutoff, 0-255 (× 43.24 Hz ≈ Hz) — never leave at 0 |
 | 22 | FX_RESONANCE  | 0-254, higher = more resonance (q = 1 − v/255) |
 | 23 | FX_DIST       | distortion — **commented out in both players, has no effect** |
 | 24 | FX_DRIVE      | output gain /32 (32 = 1.0) — main loudness control |
