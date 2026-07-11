@@ -29,7 +29,8 @@ jobs:
           path: dist
 
       - name: Upload Pages artifact
-        if: github.ref == 'refs/heads/main'
+        # Pages is unavailable on private repos (free plan) — activates once public
+        if: github.ref == 'refs/heads/main' && !github.event.repository.private
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
@@ -37,7 +38,8 @@ jobs:
   deploy:
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    # Pages is unavailable on private repos (free plan) — activates once public
+    if: github.ref == 'refs/heads/main' && !github.event.repository.private
     needs: build
     permissions:
       pages: write
