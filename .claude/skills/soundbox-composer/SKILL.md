@@ -28,12 +28,24 @@ allows the full player.
 
 ## Workflow
 
-1. **Write the song module.** Put songs in `src/audio/songs/<name>.ts` as plain
+1. **Establish the musical direction before writing any notes.** Don't guess a style —
+   derive it or ask:
+   - Extract mood candidates from the game itself: theme and setting (`GAME_TITLE`,
+     README, story), pace (turn-based/puzzle → calm, ambient; action → driving,
+     rhythmic), and moment (background loop vs. win jingle vs. failure sting).
+   - For background music the user will hear it hundreds of times — propose 2-3
+     concrete directions (e.g. "calm nocturnal drone + sparse high melody" vs.
+     "gentle rhythmic pulse with a folk-ish tune") and let the user pick, unless
+     they already gave a brief.
+   - For short sound effects, infer from the action (reward → rising/major,
+     failure → falling/minor, UI tick → single short blip) and just build it.
+
+2. **Write the song module.** Put songs in `src/audio/songs/<name>.ts` as plain
    `export const mySound = { ... }` with **no imports and no type annotations** — the
    render script loads these files directly in Node, and the game imports them as TS.
    Share one instrument array between songs where possible (bytes!).
 
-2. **Render it:**
+3. **Render it:**
    ```sh
    node scripts/render-song.mjs src/audio/songs/<name>.ts <exportName>
    ```
@@ -42,16 +54,16 @@ allows the full player.
    wrong pattern index or an `n` array in the wrong place); ~100% = clipping (lower
    `OSC_VOL`/`FX_DRIVE`). Pass `--full` only if the game will use `CPlayer`.
 
-3. **Let the user listen:** `afplay out/<name>.wav` (macOS), unless the user asked you
+4. **Let the user listen:** `afplay out/<name>.wav` (macOS), unless the user asked you
    not to play audio — then report the file path instead. A rendered file they can hear
    beats any description of the sound. For loudness, aim for a peak around 50-90%.
    Iterate on the data until it's right.
 
-4. **Wire it into the game** like the existing sounds: music via `initAudio`
+5. **Wire it into the game** like the existing sounds: music via `initAudio`
    (`src/audio/music-control.ts`), one-shot effects via `initSoundEffect` in
    `src/audio/sound-control/sound-control-box.ts`.
 
-5. **Check the byte cost** with `npm run build-js13k` — song data usually compresses
+6. **Check the byte cost** with `npm run build-js13k` — song data usually compresses
    very well (repetition!), but verify.
 
 ## Composition quick reference
@@ -69,11 +81,12 @@ allows the full player.
   release) give hi-hats/snares; a low sine with `ENV_EXP_DECAY` gives a kick.
 - Space/atmosphere comes from `FX_DELAY_AMT`/`FX_DELAY_TIME` and slow `FX_PAN_FREQ` —
   that's the entire trick behind the 2025 background track.
-- Arrangement principle for background music (user-validated preference): a **deep,
-  slow foundation** (low drone bass, long attack/release) with a **light, sparse
-  melody floating on top** — and not much in between. Depth contrast beats layer
-  count: two or three well-separated registers sound more atmospheric than four
-  layers competing in the middle. Leave rows empty; the delay fills them.
+- Technique for calm/atmospheric briefs: a deep, slow foundation (low drone bass,
+  long attack/release) with a light, sparse melody floating on top — and not much in
+  between. Depth contrast beats layer count in a sine-only palette: two or three
+  well-separated registers stay clearer than four layers competing in the middle.
+  Leave rows empty; the delay fills them. (Match the technique to the brief from
+  workflow step 1 — a driving action loop wants different tools.)
 
 ## Editing existing sounds
 
