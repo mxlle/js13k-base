@@ -69,6 +69,11 @@ allows the full player.
   release) give hi-hats/snares; a low sine with `ENV_EXP_DECAY` gives a kick.
 - Space/atmosphere comes from `FX_DELAY_AMT`/`FX_DELAY_TIME` and slow `FX_PAN_FREQ` —
   that's the entire trick behind the 2025 background track.
+- Arrangement principle for background music (user-validated preference): a **deep,
+  slow foundation** (low drone bass, long attack/release) with a **light, sparse
+  melody floating on top** — and not much in between. Depth contrast beats layer
+  count: two or three well-separated registers sound more atmospheric than four
+  layers competing in the middle. Leave rows empty; the delay fills them.
 
 ## Editing existing sounds
 
