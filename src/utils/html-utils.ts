@@ -1,10 +1,5 @@
 export function addCanvasToBody() {
-  const canvas = createElement({
-    tag: "canvas",
-    onClick: function (e) {
-      this;
-    },
-  });
+  const canvas = createElement({ tag: "canvas" });
   document.body.appendChild(canvas);
   return canvas;
 }
@@ -70,7 +65,7 @@ export function resetTransform(element: HTMLElement) {
   element.style.transform = "";
 }
 
-export function setElementToWindowSize(element) {
+export function setElementToWindowSize(element: HTMLCanvasElement) {
   element.width = window.innerWidth;
   element.height = window.innerHeight;
 }

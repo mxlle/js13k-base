@@ -1,3 +1,4 @@
+// @ts-nocheck — vendored, deliberately golfed code; typed for consumers via player-interface.ts
 /* -*- mode: javascript; tab-width: 4; indent-tabs-mode: nil; -*-
  *
  * Copyright (c) 2011-2013 Marcus Geelnard
@@ -25,6 +26,8 @@
 
 "use strict";
 
+import type { SoundBoxPlayerClass } from "./player-interface";
+
 // NOTE: This is a MODIFIED version of SoundBox's player-small.js
 // (https://sb.bitsnbites.eu/player-small.js, zlib license — see header above):
 // converted to an ES module and trimmed for size — only the sine oscillator is
@@ -39,7 +42,7 @@
 //    further by deleting the code.
 // Note: Get the latest code from: https://sb.bitsnbites.eu/player-small.js
 
-export var CPlayerSimple = function () {
+export var CPlayerSimple: SoundBoxPlayerClass = function () {
   //--------------------------------------------------------------------------
   // Private methods
   //--------------------------------------------------------------------------

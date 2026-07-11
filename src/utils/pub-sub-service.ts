@@ -66,7 +66,7 @@ export class PubSubService {
       return;
     }
 
-    this._subscriptions[event].forEach((cb) => cb(data));
+    this._subscriptions[event].forEach((cb) => cb(data as EventDataTypes[Event]));
   }
 }
 

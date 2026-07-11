@@ -13,8 +13,9 @@ declare const PokiSDK: PokiSDK;
 
 export let pokiSdk: PokiSDK | undefined;
 
-const createElement = (tag, props) => Object.assign(document.createElement(tag), props);
-const loadScript = (src) => new Promise((onload, onerror) => document.head.appendChild(createElement("script", { src, onload, onerror })));
+const createElement = (tag: string, props: object) => Object.assign(document.createElement(tag), props);
+const loadScript = (src: string) =>
+  new Promise((onload, onerror) => document.head.appendChild(createElement("script", { src, onload, onerror })));
 
 export async function initPoki(continueToGame: () => Promise<void>) {
   if (!IS_POKI_ENABLED) return continueToGame();
@@ -24,16 +25,16 @@ export async function initPoki(continueToGame: () => Promise<void>) {
     pokiSdk = PokiSDK;
   } catch (error) {
     console.log("Failed to load Poki SDK", error);
+    return continueToGame();
   }
 
-  pokiSdk
-    .init()
+  PokiSDK.init()
     .then(() => {
       console.log("Poki SDK successfully initialized");
       return continueToGame();
     })
     .then(() => {
-      pokiSdk.gameLoadingFinished();
+      PokiSDK.gameLoadingFinished();
     })
     .catch(() => {
       console.log("Initialized, something went wrong, load you game anyway");
@@ -43,7 +44,7 @@ export async function initPoki(continueToGame: () => Promise<void>) {
 }
 
 export function handlePokiCommercial(): Promise<void> {
-  if (!IS_POKI_ENABLED) return;
+  if (!IS_POKI_ENABLED || !pokiSdk) return Promise.resolve();
   // pause your game here if it isn't already
   return pokiSdk
     .commercialBreak(() => {

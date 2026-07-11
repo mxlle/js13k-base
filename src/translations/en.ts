@@ -1,12 +1,10 @@
 import { TranslationKey } from "./translationKey";
-import { HAS_SHORT_TEXTS } from "../env-utils";
 
+// For texts that should be shorter in the competition build, use per-entry
+// ternaries on the HAS_SHORT_TEXTS flag (env-utils.ts) — the unused variant is
+// tree-shaken: [TranslationKey.START]: HAS_SHORT_TEXTS ? "Go" : "Start game",
 export const enTranslations: Record<TranslationKey, string> = {
-  [TranslationKey.START_GAME]: HAS_SHORT_TEXTS ? "Start" : "Start game",
-  [TranslationKey.NEW_GAME]: "New game",
   [TranslationKey.CONTINUE]: "Continue",
-  [TranslationKey.CANCEL]: "Cancel",
-  [TranslationKey.LOADING]: "Loading...",
   [TranslationKey.WON]: "You won!",
   [TranslationKey.LOST]: "Oh no!",
 };

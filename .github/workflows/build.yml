@@ -5,6 +5,29 @@ on:
   workflow_dispatch:
 
 jobs:
+  checks:
+    name: Typecheck, format, invariants
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Prettier check
+        run: npx prettier --check src scripts vite.config.ts
+
+      - name: Size-machinery invariants
+        run: npm run lint
+
   build:
     name: Build (friends & family)
     runs-on: ubuntu-latest
@@ -13,7 +36,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
           cache-dependency-path: package-lock.json
 
@@ -60,7 +83,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
           cache-dependency-path: package-lock.json
 

@@ -12,7 +12,7 @@ type TupleOptional<L extends number, T extends readonly unknown[] = []> = number
 type SetParameterLength<F extends AnyFunction, L extends number> = (...args: TupleOptional<L, Parameters<F>>) => ReturnType<F>;
 
 export const memoize = <F extends AnyFunction, L extends number = Parameters<F>["length"]>(fn: F, length?: L): SetParameterLength<F, L> => {
-  const cache = {};
+  const cache: Record<string, ReturnType<F>> = {};
   return (...args) => {
     const key = JSON.stringify(args.slice(0, length));
     return (cache[key] ??= fn(...args));

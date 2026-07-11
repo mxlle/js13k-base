@@ -5,6 +5,11 @@
     "moduleResolution": "bundler",
     "esModuleInterop": true,
     "allowJs": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
   }
 }

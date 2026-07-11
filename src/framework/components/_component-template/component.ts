@@ -11,7 +11,7 @@ export function MyComponentWithUpdater(children: (Node | string)[] = []): Compon
   const childElement = createElement({ text: "Hello world!", cssClass: styles.child });
   const hostElement = createElement({ cssClass: styles.host }, [childElement, ...children]);
 
-  const updateComponent = (isActive: boolean) => {
+  const updateComponent = (isActive = false) => {
     childElement.classList.toggle(styles.active, isActive);
   };
 

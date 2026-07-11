@@ -28,13 +28,13 @@ function init() {
 
   document.body.append(HeaderComponent(GAME_TITLE, [MuteButton()]), gameArea);
 
-  startNewGame();
+  startNewGame!();
 
   pubSubService.subscribe(PubSubEvent.GAME_START, () => {
     document.body.classList.remove(CssClass.WON);
 
     if (IS_POKI_ENABLED) {
-      pokiSdk.gameplayStart();
+      pokiSdk?.gameplayStart();
     }
   });
 
@@ -55,7 +55,7 @@ function init() {
     }
 
     if (IS_POKI_ENABLED) {
-      sleep(300).then(() => pokiSdk.gameplayStop()); // to avoid issue that stop is called before start
+      sleep(300).then(() => pokiSdk?.gameplayStop()); // to avoid issue that stop is called before start
     }
   });
 }

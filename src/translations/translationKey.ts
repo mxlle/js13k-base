@@ -1,12 +1,10 @@
 import { defineEnum } from "../utils/enums";
 
+// Only keys that are actually read ship — unused keys still cost bytes because
+// the translation maps are kept whole. Delete keys when their last usage goes.
 export type TranslationKey = defineEnum<typeof TranslationKey>;
 export const TranslationKey = defineEnum({
-  START_GAME: 0,
-  NEW_GAME: 1,
-  CONTINUE: 2,
-  CANCEL: 3,
-  LOADING: 4,
-  WON: 5,
-  LOST: 6,
+  CONTINUE: 0,
+  WON: 1,
+  LOST: 2,
 });

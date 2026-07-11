@@ -3,6 +3,7 @@ import { LocalStorageKey, setLocalStorageItem } from "../utils/local-storage";
 import { PubSubEvent, pubSubService } from "../utils/pub-sub-service";
 import { IS_POKI_ENABLED } from "../env-utils";
 import { CPlayer } from "./small-player";
+import type { SoundBoxPlayer } from "./player-interface";
 
 let audioElem: HTMLAudioElement;
 let isActive = false;
@@ -45,7 +46,7 @@ export async function initAudio(initializeMuted: boolean) {
   });
 }
 
-export function generateUntilDone(player): Promise<void> {
+export function generateUntilDone(player: SoundBoxPlayer): Promise<void> {
   return new Promise((resolve) => {
     const interval = setInterval(() => {
       if (player.generate() >= 1) {

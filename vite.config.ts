@@ -32,26 +32,32 @@ export default defineConfig(({ mode, command }) => {
     build: {
       minify: production ? "terser" : false,
       cssMinify: production ? "lightningcss" : false,
-      terserOptions: production &&
-        !poki && {
-          ecma: 2015,
-          mangle: {
-            properties: {
-              keep_quoted: true,
-            },
-          },
-          compress: {
-            ecma: 2015,
-            booleans_as_integers: true,
-            drop_console: js13k,
-            keep_fargs: false,
-            passes: 3,
-            unsafe: true,
-          },
-        },
+      terserOptions:
+        production && !poki
+          ? {
+              ecma: 2015,
+              mangle: {
+                properties: {
+                  keep_quoted: true,
+                },
+              },
+              compress: {
+                ecma: 2015,
+                booleans_as_integers: true,
+                drop_console: js13k,
+                keep_fargs: false,
+                passes: 3,
+                unsafe: true,
+              },
+            }
+          : undefined,
       rollupOptions: {
+        // rolldown (vite 8) has no rollup-style presets — these flags mirror
+        // what rollup's `preset: "smallest"` used to enable
         treeshake: {
-          preset: "smallest",
+          moduleSideEffects: false,
+          propertyReadSideEffects: false,
+          unknownGlobalSideEffects: false,
         },
         output: {
           // filenames are stored twice in the zip — keep them short for js13k
@@ -150,24 +156,25 @@ interface Obj<K, V> extends ObjectExpression {
 const replaceMapsTransformer: Transformer = {
   onNode: (node) =>
     node.type === "ObjectExpression" &&
-    node.properties.length &&
+    node.properties.length > 0 &&
     node.properties.every((p) => p.type === "ObjectProperty" && p.key.type === "NumericLiteral" && p.value.type.endsWith("Literal")),
-  transform: (node: Obj<NumericLiteral, Literal>) => {
-    let best = { value: node, length: node.end - node.start };
-    function addCandidate(value) {
+  transform: (node) => {
+    const obj = node as Obj<NumericLiteral, Literal>;
+    let best: { value: string | typeof obj; length: number } = { value: obj, length: (obj.end ?? 0) - (obj.start ?? 0) };
+    function addCandidate(value: string) {
       if (value.length < best.length) best = { value, length: value.length };
     }
 
     // try ["a","b",,,"c"]
-    const arr = node.properties.reduce((arr, p) => ((arr[p.key.value] = (p.value as any).value), arr), []);
+    const arr = obj.properties.reduce<unknown[]>((arr, p) => ((arr[p.key.value] = (p.value as { value?: unknown }).value), arr), []);
     addCandidate(JSON.stringify(arr).replaceAll("null,", ","));
 
     // try "a|b|c".split("|")
-    if (node.properties.every((p) => p.value.type === "StringLiteral")) {
+    if (obj.properties.every((p) => p.value.type === "StringLiteral")) {
       const str = arr.join("");
-      const sep: any = [..."0123456789|,"].find((sep) => !str.includes(sep));
+      const sep = [..."0123456789|,"].find((sep) => !str.includes(sep));
       if (sep !== undefined) {
-        addCandidate(JSON.stringify(arr.join(sep)) + `.split(${sep == +sep ? +sep : JSON.stringify(sep)})`);
+        addCandidate(JSON.stringify(arr.join(sep)) + `.split(${isNaN(+sep) ? JSON.stringify(sep) : +sep})`);
       }
     }
     return best.value;

@@ -12,6 +12,10 @@ serves that constraint. When in doubt, the smaller output wins.
 - `npm run build-js13k-roadroller` — same + Roadroller-crunched JS inlined into the HTML (test in browser afterwards, it is eval-based!)
 - `npm run build-poki` — Poki platform build (Poki SDK, no property mangling)
 - `npm run size` — re-report last `dist.zip` size without rebuilding
+- `npm run typecheck` — strict `tsc` check (the vendored `small-player*.ts` are `@ts-nocheck`'d,
+  typed via `src/audio/player-interface.ts`); CI runs this on every push
+- `npm run lint` — `scripts/lint-invariants.mjs` mechanically checks the size-machinery rules
+  below (enum registration, no `Object.values(Enum)`, no direct `import.meta.env`); also in CI
 
 After **every** change while working on the js13k build, run `npm run build-js13k` and check the
 reported size. `scripts/package.js` prints a per-file breakdown, the diff to the previous build

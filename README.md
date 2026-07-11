@@ -3,8 +3,8 @@
 Starter template for [js13kGames](https://js13kgames.com/) entries (13 kB zip limit), extracted
 from [Kittens United](https://github.com/mxlle/13k-purrfect-plan) (js13k 2025).
 
-Ships with a tiny placeholder game (move the cat 🐱 to the star ⭐) that exercises the whole
-pipeline — replace `src/components/demo-game/` with your game.
+Ships with a tiny placeholder game (move the cat 🐱 to collect three stars ⭐ while avoiding the
+bomb 💣) that exercises the whole pipeline — replace `src/components/demo-game/` with your game.
 
 ## What's included
 

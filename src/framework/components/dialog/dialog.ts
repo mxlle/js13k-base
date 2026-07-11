@@ -51,7 +51,7 @@ export function createDialog(innerElement: HTMLElement, onClose: (isSubmit: bool
         pubSubService.subscribe(PubSubEvent.CLOSE_DIALOG, resolve);
       });
     },
-    close: (isSubmit: boolean) => {
+    close: (isSubmit = false) => {
       closeDialog(isSubmit);
     },
     submitButton,

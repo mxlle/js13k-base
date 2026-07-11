@@ -20,7 +20,7 @@ export async function initWinLoseSoundEffects() {
   }
 }
 
-async function initSoundEffect(soundDef: unknown) {
+async function initSoundEffect(soundDef: object) {
   const player = new CPlayer();
   player.init(soundDef);
 

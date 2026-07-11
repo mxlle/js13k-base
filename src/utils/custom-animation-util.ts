@@ -63,4 +63,4 @@ function startAnimation<T>({ keyframeDuration = 300, onProgress, calcTweenState,
  * Animate a number
  */
 export const animateNumber = <T extends number>(options: Omit<AnimateOptions<T>, "calcTweenState">): void =>
-  startAnimation({ calcTweenState: calcNumberTween, ...options } as AnimateOptions<T>);
+  startAnimation({ calcTweenState: calcNumberTween, ...options } as unknown as AnimateOptions<T>);
