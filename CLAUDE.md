@@ -72,9 +72,13 @@ The unusual parts of this codebase exist to make minification maximally effectiv
   emoji-formatted level strings with bare digit pairs + a 5-line decoder saved ~90 zipped bytes.
 - Audit data definitions for never-read fields before shipping — the 2025 levels carried a
   `description` field no code ever read; comments are free, object properties are not.
-- Music/sfx via SoundBox player (`src/audio/small-player*.ts`) — song data are tiny JS objects.
-  Use the `soundbox-composer` skill to compose/edit them in code (with audible preview via
+- Music/sfx via SoundBox player (`src/audio/small-player*.ts`) — song data are tiny JS objects
+  (the 2025 background track ≈ 290 zipped bytes). Use the `soundbox-composer` skill to
+  compose/edit them in code (audible preview + size/loop-seam stats via
   `node scripts/render-song.mjs`), or compose at https://sb.bitsnbites.eu/ and export as JS.
+  The full-featured player is the default; before shipping, run
+  `node scripts/audit-player-usage.mjs` and trim the player to what the songs actually use
+  (switch to `CPlayerSimple` if everything is sine-only — that's the 2025 trim).
 - Fonts: system/monospace + Noto Color Emoji. The Noto webfont import lives in
   `globals.nice2have.scss` so it ships only in non-js13k builds — the competition build must not
   make external requests (offline rule) and falls back to the system emoji font.

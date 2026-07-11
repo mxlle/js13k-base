@@ -2,14 +2,14 @@ import { song } from "./songs/music-and-sounds";
 import { LocalStorageKey, setLocalStorageItem } from "../utils/local-storage";
 import { PubSubEvent, pubSubService } from "../utils/pub-sub-service";
 import { IS_POKI_ENABLED } from "../env-utils";
-import { CPlayerSimple } from "./small-player-simple";
+import { CPlayer } from "./small-player";
 
 let audioElem: HTMLAudioElement;
 let isActive = false;
 let initialized = false;
 
 export async function initAudio(initializeMuted: boolean) {
-  const player = new CPlayerSimple();
+  const player = new CPlayer();
   player.init(song);
 
   await generateUntilDone(player);

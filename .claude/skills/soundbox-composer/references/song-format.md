@@ -106,5 +106,10 @@ note cache. Leave `f: []` unless automation is really needed.
 - Reuse one instrument array across songs/channels (`const instrument = [...]`).
 - Rearranging existing patterns via `p` is nearly free; each new pattern costs bytes.
 - Repetition compresses: a 4-pattern loop played 8× costs the same zipped as played 2×.
+- `render-song.mjs` prints each song's zipped byte estimate. Reference points: the
+  2025 background track ≈ 290 B, win/lose sfx ≈ 160 B each. More channels ≈ linear
+  cost growth — 6 channels of data is roughly twice 3.
+- Before shipping, `node scripts/audit-player-usage.mjs` lists which player features
+  the songs use, so unused oscillator/effect code can be trimmed from the player.
 - Song modules must stay import-free and annotation-free so `scripts/render-song.mjs`
   can execute them directly.

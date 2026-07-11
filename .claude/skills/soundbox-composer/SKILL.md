@@ -13,18 +13,22 @@ rendered to a WAV blob on startup. A full background track costs a few hundred b
 Read `references/song-format.md` before writing song data — it documents the song
 object anatomy, all 29 instrument parameters, and the note-number table.
 
-## The two players — know which one you're writing for
+## The two players — compose full, trim to ship
 
-- `src/audio/small-player-simple.ts` (`CPlayerSimple`) — what the game uses by default.
-  **Sine oscillator only** (`i[0]`/`i[4]` must be 0), no filter-LFO, no distortion.
-  Smallest possible player.
-- `src/audio/small-player.ts` (`CPlayer`) — all 4 oscillators (0 sin, 1 square, 2 saw,
-  3 tri), still no distortion. Costs more bytes; only ships if something imports it.
+- `src/audio/small-player.ts` (`CPlayer`) — **the template default**: all 4 oscillators
+  (0 sin, 1 square, 2 saw, 3 tri), filter LFO, distortion. Compose freely against this.
+- `src/audio/small-player-simple.ts` (`CPlayerSimple`) — the 2025-shipped trim
+  (sine-only, no filter-LFO/distortion), kept as a worked example of trimming.
 
-A non-zero waveform index **crashes** the simple player (its oscillator array has a
-single entry, so `mOscillators[1]` is undefined) — this is not a graceful fallback.
-Design within the sine + noise + envelope + delay palette unless the byte budget
-allows the full player.
+Before shipping, run `node scripts/audit-player-usage.mjs` — it scans all songs,
+reports which features are actually used, and says what's safe to delete: either
+switch the imports to `CPlayerSimple` (if everything is sine-only) or trim a copy of
+the full player per its checklist. Trimming is a *ship-time size optimization*, not a
+composing constraint.
+
+Trap once trimmed: a waveform index the trimmed player lacks **crashes** it
+(`mOscillators[1]` is undefined in the simple player) — not a graceful fallback.
+After any trim, re-render every song (`--simple` for the simple player) and listen.
 
 ## Workflow
 
@@ -49,10 +53,15 @@ allows the full player.
    ```sh
    node scripts/render-song.mjs src/audio/songs/<name>.ts <exportName>
    ```
-   This uses the project's real player, writes `out/<name>-<export>.wav`, and prints
-   duration + peak level. Peak 0% = your note/pattern data produced silence (usually a
-   wrong pattern index or an `n` array in the wrong place); ~100% = clipping (lower
-   `OSC_VOL`/`FX_DRIVE`). Pass `--full` only if the game will use `CPlayer`.
+   This uses the project's real player (full `CPlayer` by default, `--simple` for the
+   trimmed one), writes `out/<name>-<export>.wav`, and prints:
+   - duration + peak level — 0% = silence bug (wrong pattern index, `n` array
+     misplaced, or the `FX_FILTER: 0` trap); ~100% = clipping (lower `OSC_VOL`/`FX_DRIVE`)
+   - loop-seam tail RMS for longer tracks — background music ships as a hard loop, so
+     a loud tail clicks at the seam; render with `--loop=2` and listen to the seam
+   - the song data's zipped byte estimate — the whole 2025 background track is
+     ~290 bytes, win/lose sounds ~160 each; if a track balloons past ~600 bytes,
+     simplify patterns or reuse them via `p` before polishing further.
 
 4. **Let the user listen:** `afplay out/<name>.wav` (macOS), unless the user asked you
    not to play audio — then report the file path instead. A rendered file they can hear

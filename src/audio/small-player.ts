@@ -27,8 +27,10 @@
 
 // NOTE: This is a MODIFIED version of SoundBox's player-small.js
 // (https://sb.bitsnbites.eu/player-small.js, zlib license — see header above):
-// converted to an ES module, with the distortion effect and some unused
-// helpers commented out.
+// converted to an ES module, with some unused helpers commented out.
+// This is the FULL-featured player (all oscillators + effects) — compose against
+// this one; switch to the trimmed small-player-simple.ts (or trim a copy using
+// `node scripts/audit-player-usage.mjs`) as a size optimization before shipping.
 
 // Some general notes and recommendations:
 //  * This code uses modern ECMAScript features, such as ** instead of
@@ -259,11 +261,11 @@ export var CPlayer = function () {
             rsample = fxFilter == 3 ? band : fxFilter == 1 ? high : low;
 
             // Distortion
-            // if (dist) {
-            //   rsample *= dist;
-            //   rsample = rsample < 1 ? (rsample > -1 ? osc_sin(rsample * 0.25) : -1) : 1;
-            //   rsample /= dist;
-            // }
+            if (dist) {
+              rsample *= dist;
+              rsample = rsample < 1 ? (rsample > -1 ? osc_sin(rsample * 0.25) : -1) : 1;
+              rsample /= dist;
+            }
 
             // Drive
             rsample *= drive;

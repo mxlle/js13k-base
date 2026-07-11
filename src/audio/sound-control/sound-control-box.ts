@@ -1,6 +1,6 @@
 import { loseSound, winSound } from "../songs/music-and-sounds";
 import { generateUntilDone } from "../music-control";
-import { CPlayerSimple } from "../small-player-simple";
+import { CPlayer } from "../small-player";
 
 export let winSoundSrcUrl: string | undefined;
 export let loseSoundSrcUrl: string | undefined;
@@ -16,7 +16,7 @@ export async function initWinLoseSoundEffects() {
 }
 
 async function initSoundEffect(soundDef: unknown) {
-  const player = new CPlayerSimple();
+  const player = new CPlayer();
   player.init(soundDef);
 
   await generateUntilDone(player);
