@@ -32,9 +32,12 @@ registered in `vite.config.ts`).
 
 ## Licensing
 
-This template is MIT-licensed (see `LICENSE`), with one third-party component: the audio players
-in `src/audio/small-player*.ts` are modified versions of `player-small.js` from
-[SoundBox](https://sb.bitsnbites.eu/) by Marcus Geelnard, under the
+This template is MIT-licensed (see `LICENSE`) — fork it, ship it, sell it, no need to ask. Since a
+13 kB zip has no room for license boilerplate, consider the attribution requirement waived for games
+built with it; a mention is welcome but never expected.
+
+One third-party component: the audio players in `src/audio/small-player*.ts` are modified versions
+of `player-small.js` from [SoundBox](https://sb.bitsnbites.eu/) by Marcus Geelnard, under the
 [zlib license](https://opensource.org/licenses/Zlib) (kept in the file headers — don't remove it).
 Note that the SoundBox *editor* itself is GPLv3, but the exported player routine and your own
 exported songs are not affected by that.
