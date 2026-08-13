@@ -7,10 +7,11 @@ from [Kittens United](https://github.com/mxlle/13k-purrfect-plan) (js13k 2025).
 to collect three stars ⭐ while avoiding the bomb 💣) that exercises the whole pipeline. Replace
 `src/components/demo-game/` with your game.
 
+![The placeholder game: a 5×5 grid with a cat, three stars and a bomb, arrow buttons below and a
+mute toggle in the header](js13k-base.png)
+
 It builds to **~5,150 bytes zipped, leaving ~8,160 bytes** for your game — the entire framework,
 audio player, i18n and demo game included.
-
-<!-- TODO: add a screenshot or short GIF of the demo game here -->
 
 ## What's included
 
