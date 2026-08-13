@@ -52,7 +52,9 @@ jobs:
           path: dist
 
       - name: Upload Pages artifact
-        # Pages is unavailable on private repos (free plan) — activates once public
+        # Skipped on private repos, where Pages is unavailable on the free plan —
+        # so a fork of this template in a private repo stays green instead of
+        # failing here. Deploys automatically once the repo is public.
         if: github.ref == 'refs/heads/main' && !github.event.repository.private
         uses: actions/upload-pages-artifact@v3
         with:
@@ -61,7 +63,8 @@ jobs:
   deploy:
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
-    # Pages is unavailable on private repos (free plan) — activates once public
+    # Same guard as the upload step above: private forks skip the deploy instead
+    # of failing it. Requires Pages to be enabled with "GitHub Actions" as source.
     if: github.ref == 'refs/heads/main' && !github.event.repository.private
     needs: build
     permissions:

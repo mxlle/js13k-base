@@ -63,8 +63,9 @@ After any trim, re-render every song (`--simple` for the simple player) and list
      ~290 bytes, win/lose sounds ~160 each; if a track balloons past ~600 bytes,
      simplify patterns or reuse them via `p` before polishing further.
 
-4. **Let the user listen:** `afplay out/<name>.wav` (macOS), unless the user asked you
-   not to play audio — then report the file path instead. A rendered file they can hear
+4. **Let the user listen:** play the WAV with the platform's CLI player — `afplay` on
+   macOS, `aplay`/`paplay` on Linux, `Start-Process` in Windows PowerShell — unless the
+   user asked you not to play audio, then report the file path instead. A rendered file they can hear
    beats any description of the sound. For loudness, aim for a peak around 50-90%.
    Iterate on the data until it's right.
 

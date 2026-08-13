@@ -14,7 +14,8 @@
 //   --loop=N    write the song N times back-to-back, to listen to the loop seam
 //   --out=      output path (default: out/<file>[-<export>].wav)
 //
-// Preview on macOS: afplay out/<name>.wav
+// Preview: afplay out/<name>.wav (macOS), aplay/paplay (Linux),
+//          Start-Process out/<name>.wav (Windows PowerShell)
 import { copyFileSync, mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { basename, join, resolve } from "node:path";

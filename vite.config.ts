@@ -1,5 +1,4 @@
 import { defineConfig } from "vite";
-import { viteAwesomeSvgLoader } from "vite-awesome-svg-loader";
 import { createHtmlPlugin } from "vite-plugin-html";
 import replace from "@rollup/plugin-replace";
 import { visualizer } from "rollup-plugin-visualizer";
@@ -14,6 +13,16 @@ import { PubSubEvent } from "./src/utils/pub-sub-service";
 import { LocalStorageKey } from "./src/utils/local-storage";
 import { mapEntries, memoize } from "./src/utils/utils";
 import { Direction } from "./src/types";
+
+// Placeholder favicon: swap the emoji for your game's (see the kickoff checklist
+// in CLAUDE.md). Percent-encoded so the data URI stays valid as an HTML attribute
+// value; keep it in sync with the icon in src/manifest.json.
+const FAVICON_EMOJI = "🐱";
+const FAVICON_DATA_URI =
+  "data:image/svg+xml," +
+  encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">${FAVICON_EMOJI}</text></svg>`,
+  );
 
 export default defineConfig(({ mode, command }) => {
   const production = command === "build";
@@ -112,7 +121,6 @@ export default defineConfig(({ mode, command }) => {
           }
         },
       },
-      viteAwesomeSvgLoader(),
       createHtmlPlugin({
         minify: true,
         inject: {
@@ -121,6 +129,10 @@ export default defineConfig(({ mode, command }) => {
             : [
                 { injectTo: "head", tag: "link", attrs: { rel: "manifest", href: "src/manifest.json" } },
                 { injectTo: "head", tag: "meta", attrs: { name: "description", content: "My js13k game" } },
+                // Emoji-glyph favicon, inline so it costs no extra request. Only
+                // injected outside js13k mode — the competition build has no room
+                // for it and browsers cope fine without one.
+                { injectTo: "head", tag: "link", attrs: { rel: "icon", href: FAVICON_DATA_URI } },
               ],
         },
       }),

@@ -17,7 +17,10 @@ export interface Dialog {
 export function createDialog(innerElement: HTMLElement, onClose: (isSubmit: boolean) => void = () => {}): Dialog {
   const dialog = createElement({
     cssClass: styles.dialog,
-    onClick: (event) => event.stopPropagation(), // TODO - why?
+    // The dialog is a full-screen overlay on <body>, so clicks that land on its
+    // backdrop would otherwise bubble to global listeners behind it (e.g. a
+    // "click anywhere to restart" handler on body) and trigger them.
+    onClick: (event) => event.stopPropagation(),
   });
 
   const dialogContent = createElement({ cssClass: styles.content }, [innerElement]);

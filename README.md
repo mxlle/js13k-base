@@ -3,8 +3,14 @@
 Starter template for [js13kGames](https://js13kgames.com/) entries (13 kB zip limit), extracted
 from [Kittens United](https://github.com/mxlle/13k-purrfect-plan) (js13k 2025).
 
-Ships with a tiny placeholder game (move the cat 🐱 to collect three stars ⭐ while avoiding the
-bomb 💣) that exercises the whole pipeline — replace `src/components/demo-game/` with your game.
+**[▶ Live demo](https://mxlle.github.io/js13k-base/)** — a tiny placeholder game (move the cat 🐱
+to collect three stars ⭐ while avoiding the bomb 💣) that exercises the whole pipeline. Replace
+`src/components/demo-game/` with your game.
+
+It builds to **~5,150 bytes zipped, leaving ~8,160 bytes** for your game — the entire framework,
+audio player, i18n and demo game included.
+
+<!-- TODO: add a screenshot or short GIF of the demo game here -->
 
 ## What's included
 
@@ -17,9 +23,15 @@ bomb 💣) that exercises the whole pipeline — replace `src/components/demo-ga
   automatic ECT recompression (via `ect-bin`, ~4% smaller zips), optional Roadroller crunch
   (`npm run build-js13k-roadroller`), CI workflow that enforces the 13,312-byte limit on every push
 - **Micro framework**: `createElement` helpers, component pattern, dialog + header components,
-  pub-sub service, local storage helpers, i18n (en/de), SoundBox music/sfx players
+  pub-sub service, local storage helpers, i18n (en/de), emoji-splitting helpers
+  (`src/utils/emojis/`) for emoji-as-sprite games, SoundBox music/sfx players
+- **An AI-assist setup that knows the size rules**: `CLAUDE.md` documents the whole size machinery,
+  and `.claude/skills/soundbox-composer/` is a skill for composing the game's music and sound
+  effects in code, with audible previews and per-song byte estimates
 
 ## Getting started
+
+Requires Node.js ^20.19 or >=22.12 (CI runs 24).
 
 ```sh
 npm install
@@ -27,8 +39,24 @@ npm start            # dev server
 npm run build-js13k  # competition zip + size report
 ```
 
-See `CLAUDE.md` for the size-golfing rules that make this setup tick (important: new enums must be
-registered in `vite.config.ts`).
+Click **Use this template** on GitHub to start your own entry, then work through the
+"Yearly kickoff checklist" at the end of `CLAUDE.md` — it lists every placeholder that needs
+renaming (game title, favicon emoji, localStorage prefix).
+
+`npm install` reports a pile of `npm audit` findings. They all come from build-time tooling —
+mostly `ect-bin`'s old binary-wrapper dependency stack — and every dependency here is a
+`devDependency`, so none of it reaches the shipped zip.
+
+## Documentation
+
+`CLAUDE.md` is the real manual, for humans and AI agents alike: it explains the size machinery
+(enum inlining, the enum-map transformer, property mangling and the rules it imposes, CSS class
+name syncing) and the byte-golfing guidelines distilled from previous entries. **Read it before
+touching `vite.config.ts` or adding an enum** — new enums must be registered in the
+`replaceEnums({...})` call or their members won't be inlined.
+
+`npm run lint` mechanically checks those size-machinery invariants, and `npm run typecheck` runs
+strict `tsc`; CI runs both on every push.
 
 ## Licensing
 
